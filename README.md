@@ -135,3 +135,23 @@ The application currently uses a JSON file (`dummy.json`) as a temporary databas
 ## License
 
 This project is MIT licensed.
+
+## Implementation Phases
+
+### Phase 1: Project Setup and Basic Structure
+- [✅] Initialize NestJS project with required dependencies
+- [✅] Set up project structure and configuration files
+- [ ] Configure Swagger documentation
+- [✅] Create basic DTOs and interfaces
+- [✅] Set up dummy.json database structure
+- [ ] Configure Google OAuth2 integration
+
+### Phase 2: User Management
+- [✅] Implement UserModule with controller and service
+- [✅] Handle user authentication endpoint + CORS
+- [ ] Create user registration endpoint
+- [ ] Implement user profile management
+- [ ] Add user role management
+- [ ] Create user portfolio endpoints
+- [ ] Implement user claims endpoints
+- [ ] Add user insurance purchase/renewal endpoints

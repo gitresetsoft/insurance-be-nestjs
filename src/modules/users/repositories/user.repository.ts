@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { UserProfileDto } from '../dto/user-profile.dto';
-import { users } from './user-dummy';
+import { dummyUsers } from './user-dummy';
 
 @Injectable()
 export class UserRepository {
-  private users: UserProfileDto[] = users;
+  private users: UserProfileDto[];
 
   constructor() {
-    this.users = users;
+    this.users = dummyUsers;
   }
 
   findAll(): UserProfileDto[] {
@@ -16,6 +16,10 @@ export class UserRepository {
 
   findOne(id: string): UserProfileDto | undefined {
     return this.users.find((user) => user.id === id);
+  }
+
+  findByEmail(email: string): UserProfileDto | undefined {
+    return this.users.find((user) => user.email === email);
   }
 
   create(user: UserProfileDto): UserProfileDto {

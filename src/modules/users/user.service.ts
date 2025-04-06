@@ -11,12 +11,16 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  create(createUserDto: CreateUserDto) {
-    return `This action adds a new user: ${createUserDto.name}`;
+  findOne(id: number) {
+    return this.userRepository.findOne(id.toString());
   }
 
-  findOne(id: number) {
-    return `This action returns a ${id} user`;
+  findByEmail(email: string) {
+    return this.userRepository.findByEmail(email);
+  }
+
+  create(createUserDto: CreateUserDto) {
+    return `This action adds a new user: ${createUserDto.name}`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

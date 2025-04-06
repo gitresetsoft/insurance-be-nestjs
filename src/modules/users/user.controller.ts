@@ -21,14 +21,19 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
+  }
+
+  @Post('email')
+  findByEmail(@Body('email') email: string) {
+    return this.userService.findByEmail(email);
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Patch(':id')
