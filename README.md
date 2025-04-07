@@ -149,9 +149,9 @@ This project is MIT licensed.
 ### Phase 2: User Management
 - [✅] Implement UserModule with controller and service
 - [✅] Handle user authentication endpoint + CORS
-- [ ] Create user registration endpoint
-- [ ] Implement user profile management
-- [ ] Add user role management
+- [🕒] Create user registration endpoint
+- [ ] Implement user profile management  
+- [🚫] ~~Add user role management~~
 - [ ] Create user portfolio endpoints
 - [ ] Implement user claims endpoints
 - [ ] Add user insurance purchase/renewal endpoints
