@@ -37,7 +37,7 @@ export class UserRepository {
     this.users[userIndex] = {
       ...this.users[userIndex],
       ...updateUser,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
 
     return this.users[userIndex];
