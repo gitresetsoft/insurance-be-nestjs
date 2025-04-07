@@ -7,6 +7,8 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
 
 import { InsuranceModule } from './modules/insurance/insurance.module';
+import { PolicyModule } from './modules/policy/policy.module';
+import { ClaimsModule } from './modules/claims/claims.module';
 import { seedInsurance, seedUser } from './utils/seeder';
 
 @Module({
@@ -17,6 +19,8 @@ import { seedInsurance, seedUser } from './utils/seeder';
     UserModule,
     PrismaModule,
     InsuranceModule,
+    PolicyModule,
+    ClaimsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
