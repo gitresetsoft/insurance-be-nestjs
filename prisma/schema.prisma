@@ -12,9 +12,12 @@ model User {
   email       String        @unique
   firstName   String
   lastName    String
+  password    String?       // Optional for Google OAuth users
+  googleId    String?       @unique // For Google OAuth users
   role        UserRole      @default(user)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  lastLogin   DateTime?     // Track last login
   avatar      String?
   policies    Policy[]
   claims      Claim[]
