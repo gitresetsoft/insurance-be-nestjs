@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,12 +8,88 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  firstName String
-  lastName  String
-  role      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  avatar    String?
+  id          String        @id @default(uuid())
+  email       String        @unique
+  firstName   String
+  lastName    String
+  role        UserRole      @default(user)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  avatar      String?
+  policies    Policy[]
+  claims      Claim[]
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+model InsuranceProduct {
+  id              String        @id @default(uuid())
+  name            String
+  type            PolicyType
+  description     String
+  basePrice       Float
+  coverageDetails String
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  policies        Policy[]
+}
+
+model Policy {
+  id                String           @id @default(uuid())
+  policyNumber      String           @unique
+  status            PolicyStatus     @default(ACTIVE)
+  startDate         DateTime
+  endDate           DateTime
+  premium           Float
+  coverageLimit     Float
+  userId            String
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  insuranceProductId String
+  insuranceProduct  InsuranceProduct @relation(fields: [insuranceProductId], references: [id])
+  claims            Claim[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+enum PolicyType {
+  CAR
+  HOME
+  HEALTH
+  LIFE
+  TRAVEL
+  BUSINESS
+}
+
+enum PolicyStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING
+}
+
+model Claim {
+  id           String      @id @default(uuid())
+  claimNumber  String      @unique
+  description  String
+  amount       Float
+  status       ClaimStatus @default(SUBMITTED)
+  filingDate   DateTime    @default(now())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policyId     String
+  policy       Policy      @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+enum ClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  CLOSED
 }

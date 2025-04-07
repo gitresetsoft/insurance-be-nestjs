@@ -12,11 +12,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsIn(['user', 'admin'], { message: 'Role must be either user or admin' })
-  role: string;
+  role: 'user' | 'admin';
 
-  createdAt?: string;
-  updatedAt?: string;
-  @IsString()
   @IsOptional()
+  @IsString()
   avatar?: string;
 }

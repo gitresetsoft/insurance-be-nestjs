@@ -1,4 +1,4 @@
-import { UserProfileDto } from '../dto/user-profile.dto';
+import { UserProfileDto } from 'src/modules/users/dto/user-profile.dto';
 
 export const dummyUsers: UserProfileDto[] = [
   {
