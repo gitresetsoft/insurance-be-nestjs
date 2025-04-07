@@ -10,3 +10,4 @@ prisma/dev.db
 prisma/*.sqlite
 prisma/migrations/
 *.db
+*.db-journal

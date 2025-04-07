@@ -10,6 +10,7 @@ import { InsuranceModule } from './modules/insurance/insurance.module';
 import { PolicyModule } from './modules/policy/policy.module';
 import { ClaimsModule } from './modules/claims/claims.module';
 import { seedInsurance, seedUser } from './utils/seeder';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { seedInsurance, seedUser } from './utils/seeder';
     InsuranceModule,
     PolicyModule,
     ClaimsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

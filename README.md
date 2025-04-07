@@ -64,13 +64,15 @@ The API documentation is available through Swagger UI at `/api` when running the
 #### User Endpoints
 - POST `/auth/register` - Create new user account
 - POST `/auth/login` - User login
+
 - GET `/users/profile` - Get own profile
-- PUT `/users/profile` - Update own profile
-- GET `/users/portfolio` - View insurance portfolio
-- POST `/users/insurance/purchase` - Purchase insurance
+- PATCH `/users/profile` - Update own profile
+- GET `/users/portfolio` - View OWNED insurance portfolio
+- POST `/users/insurance/purchase` - Purchase insurance (Add Insurance)
 - POST `/users/insurance/renew` - Renew insurance
 - POST `/users/claims` - Submit claim
 - GET `/users/claims` - View own claims
+- DELETE `/users/claims`
 
 #### Admin Endpoints
 - GET `/admin/users` - List all users
@@ -81,11 +83,6 @@ The API documentation is available through Swagger UI at `/api` when running the
 - GET `/admin/claims` - View all claims
 - PUT `/admin/claims/:id` - Update claim status
 
-#### Billing Endpoints
-- GET `/billing` - Get billing records (filtered)
-- POST `/billing` - Create billing record (admin)
-- PUT `/billing` - Update billing record (admin)
-- DELETE `/billing` - Delete billing record (admin)
 
 ## Testing
 
@@ -153,6 +150,6 @@ This project is MIT licensed.
 - [✅] Setup SQLite
 - [ ] Implement user profile management  
 - [🚫] ~~Add user role management~~
-- [ ] Create user portfolio endpoints
-- [ ] Implement user claims endpoints
-- [ ] Add user insurance purchase/renewal endpoints
+- [✅] Create user portfolio endpoints
+- [✅] Implement user claims endpoints
+- [✅] Add user insurance purchase/renewal endpoints
