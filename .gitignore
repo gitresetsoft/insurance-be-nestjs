@@ -1,5 +1,12 @@
 .specstory
 node_modules
-_specstory
+
+build
 dist
+
 .env
+
+prisma/dev.db
+prisma/*.sqlite
+prisma/migrations/
+*.db

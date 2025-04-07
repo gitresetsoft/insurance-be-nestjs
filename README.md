@@ -150,6 +150,7 @@ This project is MIT licensed.
 - [✅] Implement UserModule with controller and service
 - [✅] Handle user authentication endpoint + CORS
 - [🕒] Create user registration endpoint
+- [✅] Setup SQLite
 - [ ] Implement user profile management  
 - [🚫] ~~Add user role management~~
 - [ ] Create user portfolio endpoints
