@@ -58,6 +58,7 @@ export class AuthService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validateGoogleUser(profile: any) {
     const { password, ...result } = profile;
     return {

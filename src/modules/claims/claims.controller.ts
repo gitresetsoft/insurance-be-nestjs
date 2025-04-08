@@ -6,60 +6,79 @@ import {
   Param,
   Patch,
   Post,
-  HttpCode,
-  HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
 import { ClaimStatus } from '@prisma/client';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { ResourceOwnerGuard } from '../../common/guards/resource-owner.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '@prisma/client';
 
 @Controller('claims')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class ClaimsController {
   constructor(private readonly claimsService: ClaimsService) {}
 
+  @Post()
+  @UseGuards(AuthGuard('jwt'))
+  create(@Body() createClaimDto: CreateClaimDto, @Request() req) {
+    return this.claimsService.create(createClaimDto, req.user.id);
+  }
+
   @Get()
-  async findAll() {
-    return await this.claimsService.findAll();
+  @Roles(UserRole.admin)
+  findAll() {
+    return this.claimsService.findAll();
   }
 
   @Get('user/:userId')
-  async findByUser(@Param('userId') userId: string) {
-    return await this.claimsService.findByUser(userId);
+  @UseGuards(ResourceOwnerGuard)
+  findUserClaims(@Param('userId') userId: string) {
+    return this.claimsService.findByUserId(userId);
   }
 
   @Get('policy/:policyId')
-  async findByPolicy(@Param('policyId') policyId: string) {
-    return await this.claimsService.findByPolicy(policyId);
+  @UseGuards(ResourceOwnerGuard)
+  findPolicyClaims(@Param('policyId') policyId: string) {
+    return this.claimsService.findByPolicy(policyId);
   }
 
   @Get('status/:status')
-  async findByStatus(@Param('status') status: ClaimStatus) {
-    return await this.claimsService.findByStatus(status);
+  @UseGuards(ResourceOwnerGuard)
+  findByStatus(@Param('status') status: ClaimStatus) {
+    return this.claimsService.findByStatus(status);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.claimsService.findOne(id);
-  }
-
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createClaimDto: CreateClaimDto) {
-    return await this.claimsService.create(createClaimDto);
+  @UseGuards(ResourceOwnerGuard)
+  findOne(@Param('id') id: string) {
+    return this.claimsService.findOne(id);
   }
 
   @Patch(':id')
-  async update(
+  @UseGuards(ResourceOwnerGuard)
+  update(
     @Param('id') id: string,
     @Body() updateClaimDto: UpdateClaimDto,
+    @Request() req,
   ) {
-    return await this.claimsService.update(id, updateClaimDto);
+    // Admin can update status, owner can update other fields
+    if (req.user.role === UserRole.admin) {
+      return this.claimsService.updateStatus(id, {
+        status: updateClaimDto.status as ClaimStatus,
+      });
+    }
+    return this.claimsService.update(id, updateClaimDto);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    return await this.claimsService.remove(id);
+  @UseGuards(ResourceOwnerGuard)
+  remove(@Param('id') id: string) {
+    return this.claimsService.remove(id);
   }
 }

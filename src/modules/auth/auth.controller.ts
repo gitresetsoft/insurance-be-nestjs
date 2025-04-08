@@ -46,8 +46,12 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
+  // eslint-disable-next-line @typescript-eslint/require-await
   async logout(@Res() res: Response) {
     //TODO: blacklist the token
     res.status(200).json({ message: 'Logged out successfully' });
   }
+
+  //TODO: forgot-password - sent a link to user
+  //TODO: reset-password - reset/set new password, using link above
 }
