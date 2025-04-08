@@ -8,13 +8,18 @@ import {
   Post,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { UserProfileDto } from './dto/user-profile.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../common/guards/roles.guard';
 
 @Controller('users')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -49,5 +54,17 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     return this.userService.remove(id);
+  }
+
+  @Get('profile')
+  getProfile(@Request() req) {
+    return this.userService.findOne(req.user.id);
+  }
+
+  @Patch('profile')
+  updateProfile(@Request() req, @Body() updateUserDto: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { role, ...updateData } = updateUserDto;
+    return this.userService.update(req.user.id, updateData);
   }
 }

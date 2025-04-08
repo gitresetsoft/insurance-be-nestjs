@@ -54,6 +54,19 @@ export class PolicyService {
     });
   }
 
+  async findByStatusAndUser(status: PolicyStatus, userId: string) {
+    return await this.prisma.policy.findMany({
+      where: {
+        status,
+        userId,
+      },
+      include: {
+        user: true,
+        insuranceProduct: true,
+      },
+    });
+  }
+
   async create(createPolicyDto: CreatePolicyDto) {
     // Check if user exists
     const user = await this.prisma.user.findUnique({

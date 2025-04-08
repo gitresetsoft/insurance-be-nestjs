@@ -33,7 +33,7 @@ export class ClaimsService {
     return claim;
   }
 
-  async findByUser(userId: string) {
+  async findByUserId(userId: string) {
     return await this.prisma.claim.findMany({
       where: { userId },
       include: {
@@ -61,7 +61,14 @@ export class ClaimsService {
     });
   }
 
-  async create(createClaimDto: CreateClaimDto) {
+  async create(createClaimDto: CreateClaimDto, userId: string) {
+    // Check if creating own claims
+    if (createClaimDto.userId !== userId) {
+      throw new NotFoundException(
+        `User with ID ${createClaimDto.userId} not found`,
+      );
+    }
+
     // Check if user exists
     const user = await this.prisma.user.findUnique({
       where: { id: createClaimDto.userId },
@@ -145,6 +152,28 @@ export class ClaimsService {
     return await this.prisma.claim.update({
       where: { id },
       data: updateClaimDto,
+      include: {
+        user: true,
+        policy: true,
+      },
+    });
+  }
+
+  async updateStatus(id: string, updateStatusDto: { status: ClaimStatus }) {
+    // Fetch the existing claim
+    const claim = await this.prisma.claim.findUnique({
+      where: { id },
+    });
+
+    // Check if the claim exists
+    if (!claim) {
+      throw new NotFoundException(`Claim with ID ${id} not found`);
+    }
+
+    // Update the claim with the new status
+    return await this.prisma.claim.update({
+      where: { id },
+      data: { status: updateStatusDto.status },
       include: {
         user: true,
         policy: true,
