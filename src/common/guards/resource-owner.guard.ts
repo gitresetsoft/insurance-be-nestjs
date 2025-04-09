@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
@@ -14,12 +15,16 @@ export class ResourceOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const resourceId = request.params.id;
+    const resourceId = request.params.userId;
     const resourceType = this.getResourceType(request.path);
 
     // Admin can access all resources
     if (user.role === UserRole.admin) {
       return true;
+    }
+
+    if (!resourceId) {
+      throw new ForbiddenException('Resource ID not found');
     }
 
     // Check resource ownership based on type
@@ -29,7 +34,10 @@ export class ResourceOwnerGuard implements CanActivate {
           where: { id: resourceId },
           select: { userId: true },
         });
-        return claim?.userId === user.id;
+        if (!claim) {
+          throw new NotFoundException('No claims under this user');
+        }
+        return claim.userId === user.id;
       }
 
       case 'policies': {
@@ -37,7 +45,10 @@ export class ResourceOwnerGuard implements CanActivate {
           where: { id: resourceId },
           select: { userId: true },
         });
-        return policy?.userId === user.id;
+        if (!policy) {
+          throw new NotFoundException('No policies under this user');
+        }
+        return policy.userId === user.id;
       }
 
       default:

@@ -86,7 +86,7 @@ export class PolicyService {
 
     if (!product) {
       throw new NotFoundException(
-        `Insurance product with ID ${createPolicyDto.insuranceProductId} not found`,
+        `Insurance product with ID ${createPolicyDto.insuranceProductId} is not available`,
       );
     }
 
