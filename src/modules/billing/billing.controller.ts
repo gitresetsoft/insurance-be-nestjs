@@ -16,13 +16,26 @@ import { UserRole } from '@prisma/client';
 import { BillingService } from './billing.service';
 import { CreateBillingDto } from './dto/create-billing.dto';
 import { PaginationDto } from '../../common/helpers/pagination.helper';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 
+@ApiTags('Billing')
+@ApiBearerAuth()
 @Controller('billing')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 export class BillingController {
   constructor(private readonly billingService: BillingService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all billing records with pagination' })
+  @ApiQuery({ name: 'productCode', required: false })
+  @ApiQuery({ name: 'location', required: false })
+  @ApiResponse({ status: 200, description: 'List of billing records' })
   findAll(
     @Query() pagination: PaginationDto,
     @Query('productCode') productCode?: string,
@@ -33,23 +46,42 @@ export class BillingController {
 
   @Post()
   @Roles(UserRole.admin)
+  @ApiOperation({ summary: 'Create a new billing record' })
+  @ApiResponse({
+    status: 201,
+    description: 'Billing record created successfully',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin access only' })
   create(@Body() createBillingDto: CreateBillingDto) {
     return this.billingService.create(createBillingDto);
   }
 
-  @Put(':productCode')
+  @Put(':id')
   @Roles(UserRole.admin)
+  @ApiOperation({ summary: 'Update a billing record' })
+  @ApiResponse({
+    status: 200,
+    description: 'Billing record updated successfully',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin access only' })
+  @ApiResponse({ status: 404, description: 'Billing record not found' })
   update(
     @Param('id') id: string,
-    @Param('productCode') productCode: string,
     @Body() updateData: { location: string; premiumPaid: number },
   ) {
-    return this.billingService.update(id, productCode, updateData);
+    return this.billingService.update(id, updateData);
   }
 
-  @Delete(':productCode')
+  @Delete(':id')
   @Roles(UserRole.admin)
-  remove(@Param('id') id: string, @Param('productCode') productCode: string) {
-    return this.billingService.remove(id, productCode);
+  @ApiOperation({ summary: 'Delete a billing record' })
+  @ApiResponse({
+    status: 200,
+    description: 'Billing record deleted successfully',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden - Admin access only' })
+  @ApiResponse({ status: 404, description: 'Billing record not found' })
+  remove(@Param('id') id: string) {
+    return this.billingService.remove(id);
   }
 }
