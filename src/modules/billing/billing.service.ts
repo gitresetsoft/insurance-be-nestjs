@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateBillingDto } from './dto/create-billing.dto';
 import {
@@ -44,18 +44,31 @@ export class BillingService {
 
   async update(
     id: string,
-    productCode: string,
     updateData: { location: string; premiumPaid: number },
   ) {
-    return await this.prisma.billing.update({
-      where: { id, productCode },
-      data: updateData,
-    });
+    try {
+      return await this.prisma.billing.update({
+        where: { id },
+        data: updateData,
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Billing record with ID ${id} not found`);
+      }
+      throw error;
+    }
   }
 
-  async remove(id: string, productCode: string) {
-    return await this.prisma.billing.delete({
-      where: { id, productCode },
-    });
+  async remove(id: string) {
+    try {
+      return await this.prisma.billing.delete({
+        where: { id },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Billing record with ID ${id} not found`);
+      }
+      throw error;
+    }
   }
 }
