@@ -96,3 +96,15 @@ enum ClaimStatus {
   REJECTED
   CLOSED
 }
+
+model Billing {
+  id           String   @id @default(uuid())
+  userId       String
+  productCode  String
+  location     String
+  premiumPaid  Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productCode, location])
+}
