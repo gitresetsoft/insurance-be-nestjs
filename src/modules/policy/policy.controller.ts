@@ -29,6 +29,7 @@ export class PolicyController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createPolicyDto: CreatePolicyDto, @Request() req) {
+    console.log({ createPolicyDto });
     return this.policyService.create({
       ...createPolicyDto,
       userId: req.user.id,
@@ -42,13 +43,13 @@ export class PolicyController {
   }
 
   @Get('user/:userId')
-  @UseGuards(ResourceOwnerGuard)
+  // @UseGuards(ResourceOwnerGuard)
   async findUserPolicies(@Param('userId') userId: string) {
     return await this.policyService.findByUser(userId);
   }
 
   @Get('status/:status')
-  @UseGuards(ResourceOwnerGuard)
+  // @UseGuards(ResourceOwnerGuard)
   async findByStatus(@Param('status') status: PolicyStatus, @Request() req) {
     if (req.user.role === UserRole.admin) {
       return await this.policyService.findByStatus(status);
@@ -57,7 +58,7 @@ export class PolicyController {
   }
 
   @Get(':id')
-  @UseGuards(ResourceOwnerGuard)
+  // @UseGuards(ResourceOwnerGuard)
   async findOne(@Param('id') id: string) {
     return await this.policyService.findOne(id);
   }
